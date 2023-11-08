@@ -289,12 +289,11 @@ class CHAIR(object):
             self.imid_to_objects[imid] = set(self.imid_to_objects[imid])
 
     def compute_chair(self, cap_file, image_id_key, caption_key):
-    
         '''
         Given ground truth objects and generated captions, determine which sentences have hallucinated words.
         '''
         self._load_generated_captions_into_evaluator(cap_file, image_id_key, caption_key)
-
+        
         imid_to_objects = self.imid_to_objects
         caps = self.caps
         eval_imids = self.eval_imids
@@ -432,13 +431,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.cache and os.path.exists(args.cache):
-        print(f"loading evaluator from cache: {args.cache}")
         evaluator = pickle.load(open(args.cache, 'rb'))
+        print(f"loaded evaluator from cache: {args.cache}")
     else:
         print(f"cache not setted or not exist yet, building from scratch...")
         evaluator = CHAIR(args.coco_path)
-        print(f"caching evaluator to: {args.cache}")
         pickle.dump(evaluator, open(args.cache, 'wb'))
+        print(f"cached evaluator to: {args.cache}")
 
     cap_dict = evaluator.compute_chair(args.cap_file, args.image_id_key, args.caption_key) 
     
